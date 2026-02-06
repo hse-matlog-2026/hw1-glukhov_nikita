@@ -304,16 +304,10 @@ class Formula:
             if f1 is None:
                 return None, rest
             return Formula('~', f1), rest
-        for l in (2, 1):
-            if len(string) >= l and is_binary(string[:l]):
-                op = string[:l]
-                left, rest1 = Formula.parse_polish(string[l:])
-                if left is None:
-                    return None, rest1
-                right, rest2 = Formula.parse_polish(rest1)
-                if right is None:
-                    return None, rest2
-                return Formula(op, left, right), rest2
+        if is_binary(string[0]):
+            f1, rest = Formula.parse_polish(string[1:])
+            f2, rest2 = Formula.parse_polish(rest)
+            return Formula(string[0], f1, f2), rest2
 
         if is_constant(string[0]):
             return Formula(string[0]), string[1:]
