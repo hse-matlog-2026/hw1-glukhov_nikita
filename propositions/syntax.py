@@ -114,8 +114,6 @@ class Formula:
             return self.root
 
         if is_unary(self.root):
-            if self.first is not None and (self.first.first is not None and self.first.second is not None):
-                return self.root + '(' + str(self.first) + ')'
             return self.root + str(self.first)
 
         return '(' + str(self.first) + self.root + str(self.second) + ')'
