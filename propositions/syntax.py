@@ -297,6 +297,34 @@ class Formula:
             A formula whose polish notation representation is the given string.
         """
         # Optional Task 1.8
+        if string == '':
+            return None, 'Empty'
+        if is_unary(string[0]):
+            f1, rest = Formula.parse_polish(string[1:])
+            if f1 is None:
+                return None, rest
+            return Formula('~', f1), rest
+        for l in (2, 1):
+            if len(string) >= l and is_binary(string[:l]):
+                op = string[:l]
+                left, rest1 = Formula.parse_polish(string[l:])
+                if left is None:
+                    return None, rest1
+                right, rest2 = Formula.parse_polish(rest1)
+                if right is None:
+                    return None, rest2
+                return Formula(op, left, right), rest2
+
+        if is_constant(string[0]):
+            return Formula(string[0]), string[1:]
+
+        if 'p' <= string[0] <= 'z':
+            i = 1
+            while i < len(string) and string[i].isdecimal():
+                i += 1
+            name = string[:i]
+            return Formula(name), string[i:]
+        return None, 'Invalid polish'
         
 
     def substitute_variables(self, substitution_map: Mapping[str, Formula]) -> \
