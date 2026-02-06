@@ -110,6 +110,15 @@ class Formula:
             The standard string representation of the current formula.
         """
         # Task 1.1
+        if is_variable(self.root) or is_constant(self.root):
+            return self.root
+
+        if is_unary(self.root):
+            if self.first is not None and (self.first.first is not None and self.first.second is not None):
+                return self.root + '(' + str(self.first) + ')'
+            return self.root + str(self.first)
+
+        return '(' + str(self.first) + self.root + str(self.second) + ')'
 
     def __eq__(self, other: object) -> bool:
         """Compares the current formula with the given one.
@@ -146,6 +155,14 @@ class Formula:
             A set of all variable names used in the current formula.
         """
         # Task 1.2
+        if is_variable(self.root):
+            return {self.root}
+        if is_constant(self.root):
+            return set()
+        if is_unary(self.root):
+            return self.first.variables()
+
+        return self.first.variables() | self.second.variables()
 
     @memoized_parameterless_method
     def operators(self) -> Set[str]:
@@ -156,6 +173,15 @@ class Formula:
             current formula.
         """
         # Task 1.3
+        if is_variable(self.root):
+            return set()
+        if is_constant(self.root):
+            return {self.root}
+        if is_unary(self.root):
+            return {self.root} | self.first.operators()
+
+        return {self.root} | self.first.operators() | self.second.operators()
+        
         
     @staticmethod
     def _parse_prefix(string: str) -> Tuple[Union[Formula, None], str]:
@@ -175,6 +201,7 @@ class Formula:
             is a string with some human-readable content.
         """
         # Task 1.4
+        
 
     @staticmethod
     def is_formula(string: str) -> bool:
@@ -189,6 +216,7 @@ class Formula:
         """
         # Task 1.5
         
+
     @staticmethod
     def parse(string: str) -> Formula:
         """Parses the given valid string representation into a formula.
@@ -201,6 +229,7 @@ class Formula:
         """
         assert Formula.is_formula(string)
         # Task 1.6
+        
 
     def polish(self) -> str:
         """Computes the polish notation representation of the current formula.
@@ -209,6 +238,7 @@ class Formula:
             The polish notation representation of the current formula.
         """
         # Optional Task 1.7
+        
 
     @staticmethod
     def parse_polish(string: str) -> Formula:
@@ -221,6 +251,7 @@ class Formula:
             A formula whose polish notation representation is the given string.
         """
         # Optional Task 1.8
+        
 
     def substitute_variables(self, substitution_map: Mapping[str, Formula]) -> \
             Formula:
