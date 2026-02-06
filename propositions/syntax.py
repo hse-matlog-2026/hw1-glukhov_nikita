@@ -302,7 +302,7 @@ class Formula:
                 return None, 'Empty'
 
             if is_unary(string[0]):
-                f1, rest = Formula.parse_polish(string[1:])
+                f1, rest = helper(string[1:])
                 if f1 is None:
                     return None, rest
                 return Formula('~', f1), rest
@@ -310,10 +310,10 @@ class Formula:
             for l in (2, 1):
                 if len(string) >= l and is_binary(string[:l]):
                     op = string[:l]
-                    left, rest1 = Formula.parse_polish(string[l:])
+                    left, rest1 = helper(string[l:])
                     if left is None:
                         return None, rest1
-                    right, rest2 = Formula.parse_polish(rest1)
+                    right, rest2 = helper(rest1)
                     if right is None:
                         return None, rest2
                     return Formula(op, left, right), rest2
