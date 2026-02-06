@@ -199,6 +199,44 @@ class Formula:
             is a string with some human-readable content.
         """
         # Task 1.4
+        if string == '':
+            return None, 'Empty string'
+
+        if string[0] == '~':
+            ff, rest = Formula._parse_prefix(string[1:])
+            if ff is None:
+                return None, rest
+            return Formula('~', ff), rest
+
+        if string[0] == '(':
+            first_formula, rest = Formula._parse_prefix(string[1:])
+            if first_formula is None:
+                return None, rest
+            op = None
+            for l in (2, 1):
+                if len(rest) >= l and is_binary(rest[:l]):
+                    op = rest[:l]
+                    rest = rest[l:]
+                    break
+            if op is None:
+                return None, 'Missing binary operator'
+            second_formula, rest2 = Formula._parse_prefix(rest)
+            if second_formula is None:
+                return None, rest2
+            if rest2 == '' or rest2[0] != ')':
+                return None, "Missing )"
+            return Formula(op, first_formula, second_formula), rest2[1:]
+
+        if is_constant(string[0]):
+            return Formula(string[0]), string[1:]
+        if 'p' <= string[0] <= 'z':
+            i = 1
+            while i < len(string) and string[i].isdecimal():
+                i += 1
+            name = string[:i]
+            if is_variable(name):
+                return Formula(name), string[i:]
+        return None, 'Invalid prefix'
         
 
     @staticmethod
