@@ -280,7 +280,11 @@ class Formula:
             The polish notation representation of the current formula.
         """
         # Optional Task 1.7
-        
+        if is_variable(self.root) or is_constant(self.root):
+            return self.root
+        if is_unary(self.root):
+            return self.root + self.first.polish()
+        return self.root + self.first.polish() + self.second.polish()
 
     @staticmethod
     def parse_polish(string: str) -> Formula:
